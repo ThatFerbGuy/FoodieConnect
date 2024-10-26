@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 17, 2024 at 07:26 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.0.28
+-- Generation Time: Oct 26, 2024 at 07:32 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,12 +29,20 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `blog` (
   `blog_id` int(15) NOT NULL,
-  `reg_id` int(15) NOT NULL,
+  `blogger_id` int(11) NOT NULL,
+  `author` int(15) NOT NULL,
   `blog_title` varchar(60) NOT NULL,
   `blog` varchar(30) NOT NULL,
   `blog_img` varchar(30) NOT NULL,
   `blog_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `blog`
+--
+
+INSERT INTO `blog` (`blog_id`, `blogger_id`, `author`, `blog_title`, `blog`, `blog_img`, `blog_date`) VALUES
+(13, 27, 0, 'blog', 'content', 'uploads/blog_imagePicsart_24-0', '2024-10-26 12:32:03');
 
 -- --------------------------------------------------------
 
@@ -85,6 +93,8 @@ CREATE TABLE `login` (
 INSERT INTO `login` (`email`, `password`, `question`, `answer`, `usertype`, `status`) VALUES
 ('admin@gmail.com', 'admin123', 'Nick name', 'admin', 'admin', 1),
 ('jishnu123@gmail.com', 'Jishnu@123', 'Favourite Food?', 'Biriyani', 'customer', 1),
+('Ke@gmail.com', '123456', 'When is your Birthday?', '21 11 2049', 'customer', 1),
+('sel@gmail.com', '123', 'Favourite Food?', 'biriyani', 'seller', 1),
 ('testuser1234@gmail.com', 'Test@1234', 'Name of your first pet', 'lulu', 'seller', 1),
 ('testuser123@gmail.com', 'Test@123', 'Favourite Food?', 'Biriyani', 'seller', 1);
 
@@ -140,7 +150,8 @@ CREATE TABLE `product` (
 INSERT INTO `product` (`p_id`, `email`, `p_name`, `category`, `p_mrp`, `p_expiry_date`, `p_packed_date`, `p_description`, `p_qty`, `p_pic`, `p_stock`) VALUES
 (4, 'testuser123@gmail.com', 'EC Chappathi', 'Food', 60, '2024-10-24', '2024-10-16', 'Half baked chapathi', 12, 'ec-half-cooked-chapathi.jpg', 20),
 (5, 'testuser123@gmail.com', 'Aashirvad Chappathi', 'Food', 60, '2024-10-24', '2024-10-16', 'Half baked chapathi', 10, 'chappathi.jpg', 20),
-(6, 'testuser1234@gmail.com', 'Nuts', 'Dry Fruits', 600, '2025-01-01', '2024-10-01', 'nuts', 1, 'ec-half-cooked-chapathi.jpg', 20);
+(6, 'testuser1234@gmail.com', 'Nuts', 'Dry Fruits', 600, '2025-01-01', '2024-10-01', 'nuts', 1, 'ec-half-cooked-chapathi.jpg', 20),
+(7, '', 'Product', 'Groceries', 10, '', '', '', 0, 'uploads/1729926327_Picsart_24-09-30_00-33-15-119.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -179,7 +190,9 @@ CREATE TABLE `registration` (
 INSERT INTO `registration` (`reg_id`, `name`, `email`, `phone`, `home`, `street`, `district`, `pin`) VALUES
 (23, 'Jishnu', 'jishnu123@gmail.com', 7994245510, 'ss', 'ss', 'Ernakulam', 686691),
 (25, 'Test User', 'testuser123@gmail.com', 9778146653, 'ss', 'ss', 'Ernakulam', 686691),
-(26, 'Test user', 'testuser1234@gmail.com', 7994245510, 'ss', 'ss', 'Ernakulam', 686691);
+(26, 'Test user', 'testuser1234@gmail.com', 7994245510, 'ss', 'ss', 'Ernakulam', 686691),
+(27, 'Sel', 'sel@gmail.com', 987654321, 'add', 'str', 'dist', 123456),
+(28, 'Ke', 'Ke@gmail.com', 1234567890, 'house', 'street', 'dist', 123455);
 
 -- --------------------------------------------------------
 
@@ -214,7 +227,8 @@ CREATE TABLE `seller` (
 
 INSERT INTO `seller` (`s_id`, `email`, `s_photo`, `s_license`) VALUES
 (11, 'testuser123@gmail.com', 'hook-keychain-93755794143489.jpg', 'hook-keychain-93755794143489.jpg'),
-(12, 'testuser1234@gmail.com', 'AI Assisted (1).png', 'ec-half-cooked-chapathi.jpg');
+(12, 'testuser1234@gmail.com', 'AI Assisted (1).png', 'ec-half-cooked-chapathi.jpg'),
+(13, 'sel@gmail.com', 'pfp.png', 'pfp.png');
 
 --
 -- Indexes for dumped tables
@@ -276,7 +290,7 @@ ALTER TABLE `seller`
 -- AUTO_INCREMENT for table `blog`
 --
 ALTER TABLE `blog`
-  MODIFY `blog_id` int(15) NOT NULL AUTO_INCREMENT;
+  MODIFY `blog_id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `cart`
@@ -300,19 +314,19 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `p_id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `p_id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `registration`
 --
 ALTER TABLE `registration`
-  MODIFY `reg_id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `reg_id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `seller`
 --
 ALTER TABLE `seller`
-  MODIFY `s_id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `s_id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -3,7 +3,7 @@
 session_start();
 
 // Include database connection
-include("connection.php");
+include("db_connect.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = isset($_POST['email']) ? $_POST['email'] : '';
@@ -30,14 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if($row['usertype']=="admin"){
                 ?>
                 <script>
-                    window.location.replace("admin/index.php")
+                    window.location.replace("sell.php")
                 </script>
                 <?php
             }
             else if($row['usertype']=="customer"){
                 ?>
                 <script>
-                    window.location.replace("customer/index.php")
+                    window.location.replace("menu.php")
                 </script>
                 <?php
             }
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if($row['status']==1){
                     ?>
                     <script>
-                        window.location.replace("seller/index.php")
+                        window.location.replace("sell.php")
                     </script>
                     <?php
                 }

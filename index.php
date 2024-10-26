@@ -1,3 +1,7 @@
+<?php
+session_start();
+$is_logged_in = isset($_SESSION['email']);
+?>
 <!doctype html>
 <html lang="en">
 
@@ -36,16 +40,22 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                    <ul class="navbar-nav mx-lg-auto">
-                        <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="sell.php">Sell</a></li>
-                        <li class="nav-item"><a class="nav-link" href="blog2.php">Recipes blog</a></li>
-                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
-                        <!-- <li class="nav-item"><a class="nav-link" href="feedback.html">Feedbacks</a></li>
-                        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li> -->
-                    </ul>
+                <ul class="navbar-nav mx-lg-auto">
+                    <?php if (isset($_SESSION['email'])): ?>
+                    <?php if ($_SESSION['usertype'] === 'customer'): ?>
+                <li class="nav-item"><a class="nav-link" href="menu.php">Buy</a></li>
+                    <?php endif; ?>
+                    <?php if ($_SESSION['usertype'] === 'seller'): ?>
+                <li class="nav-item"><a class="nav-link" href="sell.php">Sell</a></li>
+                    <?php endif; ?>
+                <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
+                <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                    <?php else: ?>
+                <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                    <?php endif; ?>
+                <li class="nav-item"><a class="nav-link" href="blog.php">Recipes Blog</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                </ul>
                 </div>
                 <!-- search button -->
                 <div class="search-right">
@@ -98,11 +108,11 @@
                     </div>
                     <br><br>
                     <div class="newbtn">
-                        <a class="btn button-style" href="menu.html">Buy</a>
+                        <a class="btn button-style" href="menu.php">Buy</a>
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <a class="btn button-style" href="sell.php">Sell</a>
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                        <a class="btn button-style" href="blog2.php">Blog</a>
+                        <a class="btn button-style" href="blog.php">Blog</a>
                     </div>
 
                     <p class="subtext"> </p>
@@ -426,20 +436,20 @@
                         <div class="services-gd">
                             <div class="serve-info">
                                 <h3 class="date">21<sup>st</sup> October</h3>
-                                <a href="blog2.php">
+                                <a href="blog.php">
                                     <figure>
                                         <img class="img-responsive" src="assets/images/blog1.jpg" alt="blog-image">
                                     </figure>
                                 </a>
-                                <h3> <a href="blog2.php" class="vv-link">Chicken Curry Recipe</a>
+                                <h3> <a href="blog.php" class="vv-link">Chicken Curry Recipe</a>
                                 </h3>
                                 <ul class="admin-list">
-                                    <li><a href="blog2.php"><span class="fa fa-user-circle"
+                                    <li><a href="blog.php"><span class="fa fa-user-circle"
                                                 aria-hidden="true"></span>
                                             veettamma</a></li>
-                                    <li><a href="blog2.php"><span class="fa fa-heart" aria-hidden="true"></span>200
+                                    <li><a href="blog.php"><span class="fa fa-heart" aria-hidden="true"></span>200
                                             Likes</a></li>
-                                    <li><a href="blog2.php"><span class="fa fa-comments"
+                                    <li><a href="blog.php"><span class="fa fa-comments"
                                                 aria-hidden="true"></span>75 Comments</a>
                                     </li>
                                 </ul>
@@ -450,20 +460,20 @@
                         <div class="services-gd">
                             <div class="serve-info">
                                 <h3 class="date">14<sup>th</sup> October</h3>
-                                <a href="blog2.php">
+                                <a href="blog.php">
                                     <figure>
                                         <img class="img-responsive" src="assets/images/blog4.jpg" alt="blog-image">
                                     </figure>
                                 </a>
-                                <h3> <a href="blog2.php" class="vv-link">Indian Coffee House Review</a>
+                                <h3> <a href="blog.php" class="vv-link">Indian Coffee House Review</a>
                                 </h3>
                                 <ul class="admin-list">
-                                    <li><a href="blog2.php"><span class="fa fa-user-circle"
+                                    <li><a href="blog.php"><span class="fa fa-user-circle"
                                                 aria-hidden="true"></span>
                                             vlogger</a></li>
-                                    <li><a href="blog2.php"><span class="fa fa-heart" aria-hidden="true"></span>2.1k
+                                    <li><a href="blog.php"><span class="fa fa-heart" aria-hidden="true"></span>2.1k
                                             Likes</a></li>
-                                    <li><a href="blog2.php"><span class="fa fa-comments"
+                                    <li><a href="blog.php"><span class="fa fa-comments"
                                                 aria-hidden="true"></span>200 Comments</a>
                                     </li>
                                 </ul>
@@ -474,20 +484,20 @@
                         <div class="services-gd">
                             <div class="serve-info">
                                 <h3 class="date">4<sup>th</sup> November</h3>
-                                <a href="blog2.php">
+                                <a href="blog.php">
                                     <figure>
                                         <img class="img-responsive" src="assets/images/blog3.jpg" alt="blog-image">
                                     </figure>
                                 </a>
-                                <h3> <a href="blog2.php" class="vv-link">How to have a healthy diet</a>
+                                <h3> <a href="blog.php" class="vv-link">How to have a healthy diet</a>
                                 </h3>
                                 <ul class="admin-list">
-                                    <li><a href="blog2.php"><span class="fa fa-user-circle"
+                                    <li><a href="blog.php"><span class="fa fa-user-circle"
                                                 aria-hidden="true"></span>
                                             K7-uncle</a></li>
-                                    <li><a href="blog2.php"><span class="fa fa-heart" aria-hidden="true"></span>23
+                                    <li><a href="blog.php"><span class="fa fa-heart" aria-hidden="true"></span>23
                                             Likes</a></li>
-                                    <li><a href="blog2.php"><span class="fa fa-comments"
+                                    <li><a href="blog.php"><span class="fa fa-comments"
                                                 aria-hidden="true"></span>0 Comments</a>
                                     </li>
                                 </ul>
@@ -620,7 +630,7 @@
                                             Us</a></li>
                                     <li><a href="sell.php"><i class="fa fa-angle-right"
                                                 aria-hidden="true"></i>Sell</a></li>
-                                    <li><a href="blog2.php"><i class="fa fa-angle-right" aria-hidden="true"></i>Recipe Blogs
+                                    <li><a href="blog.php"><i class="fa fa-angle-right" aria-hidden="true"></i>Recipe Blogs
                                             </a></li>
                                     <li><a href="contact.html"><i class="fa fa-angle-right"
                                                 aria-hidden="true"></i>Contact Us</a></li>
@@ -628,7 +638,7 @@
                             </div>
                             <div class="col-6 column pl-0">
                                 <ul class="footer-gd-16">
-                                    <li><a href="menu.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Product Menu</a></li>
+                                    <li><a href="menu.php"><i class="fa fa-angle-right" aria-hidden="true"></i>Product Menu</a></li>
                                     <li><a href="#privacy"><i class="fa fa-angle-right" aria-hidden="true"></i>Privacy
                                             Policy</a></li>
                                     <li><a href="terms.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Terms and

@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<?php 
+ session_start();
+ include("db_connect.php");
+ 
+ // Ensure the user is logged in
+ if (!isset($_SESSION['email']) || !isset($_SESSION['usertype'])) {
+     // Redirect to login page if not logged in
+     header("Location: login.html");
+     exit();
+ }
+ 
+ // Check if the user is of type 'seller'
+ if ($_SESSION['usertype'] === 'customer' && basename($_SERVER['PHP_SELF']) === 'sell.php') {
+     echo "<script>
+             alert('Login as a Customer to view the Menu page.');
+             window.location.replace('login.html'); // Redirect seller to the seller-accessible page
+           </script>";
+     exit();
+ }
+ ?>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,51 +29,9 @@
     <!-- google-fonts -->
     <!-- Template CSS Style link -->
     <link rel="stylesheet" href="assets/css/style-starter.css">
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initial setup
-            var actionDropdown = document.getElementById('action');
-            var priceGroup = document.getElementById('price-group');
 
-            // Show or hide sell options based on dropdown selection
-            actionDropdown.addEventListener('change', function() {
-                if (actionDropdown.value === 'sell') {
-                    priceGroup.classList.remove('hidden');  // Show sell options
-                } else {
-                    priceGroup.classList.add('hidden');  // Hide sell options
-                }
-            });
 
-            // Trigger change event to set initial visibility
-            actionDropdown.dispatchEvent(new Event('change'));
-        });
 
-        //donate or sell//
-        function togglePriceBox() {
-            var select = document.getElementById("sellOrDonate").value;
-            var priceBox = document.getElementById("price-box");
-            var goodJob = document.getElementById("good-job");
-
-            if (select === "sell") {
-                priceBox.style.display = "block";
-                goodJob.style.display = "none";
-            } else {
-                priceBox.style.display = "none";
-                goodJob.style.display = "block";
-            }
-        }
-        window.onload = togglePriceBox;
-    </script>
-     <style>
-        .hidden {
-            display: none;
-        }
-        
-        .form-group {
-            display: none;
-        }
-
-    </style>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -65,7 +44,7 @@
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
-    background-image: url("assets/images/sellbg.jpg");
+    background: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -169,12 +148,7 @@ input[type="file"] {
             };
         });
     </script>
-    <?
-    include("db_connect.php");
-
-session_start();
-?>
-
+   
      <!--header-->
      <header id="site-header" class="fixed-top">
         <div class="container">
@@ -196,7 +170,7 @@ session_start();
                         <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
                         <li class="nav-item"><a class="nav-link" href="sell.php">Sell</a></li>
-                        <li class="nav-item"><a class="nav-link" href="blog2.php">Recipes blog</a></li>
+                        <li class="nav-item"><a class="nav-link" href="blog.php">Recipes blog</a></li>
                         <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
                         <li class="nav-item"><a class="nav-link" href="feedback.html">Feedbacks</a></li>
                         <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
@@ -251,56 +225,104 @@ session_start();
        <div class="form-inner">
       
 <!--products-->
-
-<form method="post" action="sell1.php" class="product-form" enctype="multipart/form-data">
+<form method="post" action="sell.php" class="product-form" enctype="multipart/form-data">
+    <!-- Product Name -->
     <div class="field">
-        <input type="text" name="p_name" placeholder="Product Name">
+        <input type="text" name="p_name" placeholder="Product Name" required>
         <span class="error"></span>
     </div>
 
+    <!-- Category Selection -->
     <div class="form-group">
-        <select id="category" name="category" >
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+            <option value="" disabled selected>Select Category</option>
             <option value="Groceries">Groceries</option>
-            <option value="Cooked">Cooked Food</option>
-            <option value="Farmed">Farmed Products</option>
+            <option value="Cooked Food">Cooked Food</option>
+            <option value="Farmed Products">Farmed Products</option>
         </select>
         <span class="error"></span>
     </div>
 
+    <!-- Expiry Date -->
     <div class="form-group">
-        <label>Expiry date:</label>
-        <input type="date" name="p_exp">
+        <label>Expiry Date:</label>
+        <input type="date" name="p_expiry_date" required>
         <span class="error"></span>
+    </div>
+
+    <!-- Packed Date -->
+    <div class="form-group">
+        <label>Packed Date:</label>
+        <input type="date" name="p_packed_date" required>
+        <span class="error"></span>
+    </div>
+
+<!-- Sell or Donate Option -->
+<div class="form-group">
+    <label for="sellOrDonate">Choose Option:</label>
+    <select id="sellOrDonate" name="sellOrDonate" onchange="togglePriceBox()" required>
+        <option value="" disabled selected>Select Option</option>
+        <option value="sell">Sell</option>
+        <option value="donate">Donate</option>
+    </select>
 </div>
 
-    <div class="form-group">
-        <select id="sellOrDonate" name="sellOrDonate" onchange="togglePriceBox()">
-            <option value="sell" >Sell</option>
-            <option value="donate" >Donate</option>
-        </select>
-    </div>
+<!-- Price Field (Only for "Sell" Option) -->
+<div id="price-group" class="form-group hidden">
+    <input type="number" class="form-control" id="p_mrp" name="p_mrp" placeholder="Enter price" step="0.01">
+    <span class="error"></span>
+</div>
 
-    <div id="price-box" class="form-group half-width">
-        <input type="number" class="form-control" id="p_mrp" name="p_mrp" placeholder="Enter price" step="0.01" required>
+<!-- Good Job Message (Only for "Donate" Option) -->
+<div class="form-group hidden" id="good-job">Good job! Thank you for donating.</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var actionDropdown = document.getElementById('sellOrDonate');
+        var priceGroup = document.getElementById('price-group');
+        var goodJobMessage = document.getElementById("good-job");
+
+        // Show or hide elements based on selection
+        actionDropdown.addEventListener('change', function() {
+            if (actionDropdown.value === 'sell') {
+                priceGroup.classList.remove('hidden');  // Show price input
+                goodJobMessage.classList.add('hidden'); // Hide donation message
+            } else if (actionDropdown.value === 'donate') {
+                priceGroup.classList.add('hidden');     // Hide price input
+                goodJobMessage.classList.remove('hidden'); // Show donation message
+            } else {
+                // Default state (no selection)
+                priceGroup.classList.add('hidden');
+                goodJobMessage.classList.add('hidden');
+            }
+        });
+
+        // Trigger change event to set initial visibility
+        actionDropdown.dispatchEvent(new Event('change'));
+    });
+</script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
+
+    <!-- Product Description -->
+    <div class="form-group">
+        <textarea name="p_description" placeholder="Enter Description" required></textarea>
         <span class="error"></span>
     </div>
 
-    <div class="form-group" id="good-job">Good job! Thank you for donating.</div>
-
-    <div id="quantity-box" class="form-group half-width">
-        <input type="number" class="form-control" id="p_qnt" name="p_qnt" placeholder="Enter quantity" step="0.01" required>
-        <span class="error"></span>
-    </div>
-
+    <!-- Image Upload -->
     <div class="form-group">
-        <textarea name="p_desc" placeholder="Enter Description"></textarea>
-        <span class="error"></span>
+        <label>Upload Product Image:</label>
+        <input type="file" name="p_pic" accept="image/*" required>
     </div>
 
-    <div class="form-group">
-        <input type="file" name="p_pic" multiple accept="image/*">
-    </div>
-
+    <!-- Submit Button -->
     <div class="field btn">
         <input type="submit" value="Submit">
     </div>
@@ -332,7 +354,7 @@ session_start();
                                             Us</a></li>
                                     <li><a href="sell.php"><i class="fa fa-angle-right"
                                                 aria-hidden="true"></i>Sell</a></li>
-                                    <li><a href="blog2.php"><i class="fa fa-angle-right" aria-hidden="true"></i>Recipe Blogs
+                                    <li><a href="blog.php"><i class="fa fa-angle-right" aria-hidden="true"></i>Recipe Blogs
                                             </a></li>
                                     <li><a href="contact.html"><i class="fa fa-angle-right"
                                                 aria-hidden="true"></i>Contact Us</a></li>
